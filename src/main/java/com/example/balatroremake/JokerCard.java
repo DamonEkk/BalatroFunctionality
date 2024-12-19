@@ -9,8 +9,8 @@ public class JokerCard  extends Card{
     int mult;
     int coins;
     float multiplier; // set to none unless card will alter per something.
-    public JokerCard(String name, String type, String description, SpecialJoker specialJoker, String power, int mult, int coins) {
-        super(name, type, description);
+    public JokerCard(String name, String description, SpecialJoker specialJoker, String power, int mult, int coins) {
+        super(name, description);
         this.specialJoker = specialJoker;
         this.power = power;
         this.mult = mult;
