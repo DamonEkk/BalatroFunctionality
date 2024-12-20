@@ -5,7 +5,7 @@ import com.example.balatroremake.enums.Special;
 
 
 public class PlayCard extends Card{
-    static PlayCard[] allCards = new PlayCard[52];
+    static PlayCard[] allCards = new PlayCard[52]; // This should be a list to accomodate later stages in the games and different decks.
     static String[] suits = {"heart", "diamond", "club", "spade"};
 
     String faceCard;
