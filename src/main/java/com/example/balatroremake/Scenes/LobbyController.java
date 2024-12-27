@@ -1,9 +1,9 @@
-package com.example.balatroremake;
+package com.example.balatroremake.Scenes;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class LobbyController {
     @FXML
     private Label welcomeText;
 

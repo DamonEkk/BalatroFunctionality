@@ -1,4 +1,4 @@
-package com.example.balatroremake;
+package com.example.balatroremake.Objects;
 
 public class CelestialCards extends Card {
     public CelestialCards(String name, String description) {

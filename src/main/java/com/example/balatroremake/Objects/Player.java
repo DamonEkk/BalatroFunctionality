@@ -1,4 +1,4 @@
-package com.example.balatroremake;
+package com.example.balatroremake.Objects;
 
 public class Player {
 
