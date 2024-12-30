@@ -1,6 +1,7 @@
 package com.example.balatroremake.enums;
 
 public enum GameState {
+    intro,
     lobby,
     startGame,
     selectLevel,

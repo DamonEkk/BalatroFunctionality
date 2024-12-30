@@ -1,14 +1,25 @@
 package com.example.balatroremake.Scenes;
 
+import com.example.balatroremake.Model.GameLoop;
+import com.example.balatroremake.enums.GameState;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class LobbyController {
     @FXML
-    private Label welcomeText;
+    private Label titleText;
+
+    static GameState gameState;
 
     @FXML
     protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+        gameState = GameState.startGame;
+        GameLoop.setGameState(gameState);
     }
+
+    public static void setState(GameState gameLoop) {
+        gameState = gameLoop;
+
+    }
+
 }
