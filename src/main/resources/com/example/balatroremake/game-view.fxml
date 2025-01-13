@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.balatroremake.Scenes.GameScreenController">
     <VBox alignment="CENTER">
@@ -14,7 +15,14 @@
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
         </padding>
+        <Label>gaming gang</Label>
 
-
+        <Button fx:id="generateButton"  onAction="#generateButtonAction">Generate</Button>
     </VBox>
+    <HBox fx:id="cardVBox" spacing="10" alignment="CENTER">
+
+        <padding>
+            <Insets bottom="20" left="500" right="500" top="20"></Insets>
+        </padding>
+    </HBox>
 </VBox>

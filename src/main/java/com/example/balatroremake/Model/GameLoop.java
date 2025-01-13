@@ -13,16 +13,18 @@ import java.io.IOException;
 public class GameLoop {
 
     private GameState gameState;
+    public static GameState currentState;
 
-    public GameLoop() {
+    public GameLoop() throws IOException {
         this.gameState = GameState.intro;
+        currentState = this.gameState;
     }
 
     public void loop() throws IOException {
-        switch (gameState) {
+        switch (currentState) {
 
             case intro:
-                LobbyController.setState(this.gameState);
+                LobbyController.setState(currentState);
                 break;
             case lobby:
 
@@ -72,14 +74,15 @@ public class GameLoop {
                 break;
 
                 default:
-                    this.gameState = GameState.lobby;
+                    currentState = GameState.lobby;
                     break;
         }
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public static void setGameState(GameState gameState) {
+        currentState = gameState;
     }
+
 
     public GameState returnGameState() {
         return this.gameState;

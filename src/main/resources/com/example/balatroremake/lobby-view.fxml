@@ -15,6 +15,6 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
         </padding>
 
-        <Button text="Play" onAction="#onHelloButtonClick"/>
+        <Button fx:id="startButton" text="Play" onAction="#onHelloButtonClick"/>
     </VBox>
 </VBox>
