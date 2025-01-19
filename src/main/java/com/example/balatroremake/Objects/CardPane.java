@@ -35,7 +35,7 @@ public class CardPane extends StackPane {
 
         Label midSpace = new Label();
         midSpace.setText(" ");
-        middleBox.setPadding(new Insets(50, 45, 50, 45));
+        middleBox.setPadding(new Insets(75, 70, 75, 70));
 
         spaceBox.setAlignment(Pos.TOP_LEFT);
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -45,11 +45,11 @@ public class CardPane extends StackPane {
         Label bottomNameLabel = new Label();
         if (card.cardValue != 0) {
             nameLabel.setText(String.valueOf(card.cardValue));
-            nameLabel.setStyle("-fx-font-size: 18; -fx-text-fill: black;");
+            nameLabel.setStyle("-fx-font-size: 20; -fx-text-fill: black;");
 
 
             bottomNameLabel.setText(String.valueOf(card.cardValue));
-            bottomNameLabel.setStyle("-fx-font-size: 18; -fx-text-fill: black;");
+            bottomNameLabel.setStyle("-fx-font-size: 20; -fx-text-fill: black;");
 
         }
         else{
@@ -69,14 +69,14 @@ public class CardPane extends StackPane {
 
 
         if (card.description.equals("♥") || card.description.equals("♦")){
-            suitLabel.setStyle("-fx-font-size: 18; -fx-text-fill: red;");
-            suitLabelBottom.setStyle("-fx-font-size: 18; -fx-text-fill: red;");
+            suitLabel.setStyle("-fx-font-size: 20; -fx-text-fill: red;");
+            suitLabelBottom.setStyle("-fx-font-size: 20; -fx-text-fill: red;");
 
 
         }
         else{
-            suitLabel.setStyle("-fx-font-size: 18; -fx-text-fill: black;");
-            suitLabelBottom.setStyle("-fx-font-size: 18; -fx-text-fill: black;");
+            suitLabel.setStyle("-fx-font-size: 20; -fx-text-fill: black;");
+            suitLabelBottom.setStyle("-fx-font-size: 20; -fx-text-fill: black;");
         }
 
         suitBox.getChildren().addAll(suitLabel);
@@ -98,6 +98,7 @@ public class CardPane extends StackPane {
                 System.out.println(GameScreenController.selectedHand);
                 this.setTranslateY(-20);
                 GameScreenController.selectedHand++;
+                GameScreenController.selectedCards.add(this);
 
                 selected = 1;
             }
@@ -105,6 +106,7 @@ public class CardPane extends StackPane {
 //
                 this.setTranslateY(0);
                 GameScreenController.selectedHand--;
+                GameScreenController.selectedCards.remove(this);
                 selected = 0;
             }
         });

@@ -17,8 +17,11 @@ public class GameScreenController {
     public List<PlayCard> allCards;
     public List<PlayCard> usedCards = new ArrayList<>();
     public List<CardPane> hand = new ArrayList<>();
+    public static List<CardPane> selectedCards = new ArrayList<>();
 
     public static int selectedHand = 0;
+
+    int handCompacity = 7;
 
     @FXML
     private HBox cardVBox;
@@ -29,10 +32,11 @@ public class GameScreenController {
     public void initialize() {
         PlayCard[] tempList = PlayCard.getAllCards();
         allCards = new ArrayList<>(Arrays.asList(tempList));
+        generate();
     }
 
-    public void generateButtonAction(){
-        if (allCards.size() >= 0 && hand.size() <= 7) {
+    public void generate(){
+        while (allCards.size() >= 0 && hand.size() <= handCompacity) {
             int cardIndex = new Random().nextInt(allCards.size());
             System.out.println("cardIndex: " + cardIndex);
 
