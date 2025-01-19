@@ -18,6 +18,8 @@ public class GameScreenController {
     public List<PlayCard> usedCards = new ArrayList<>();
     public List<CardPane> hand = new ArrayList<>();
 
+    public static int selectedHand = 0;
+
     @FXML
     private HBox cardVBox;
 

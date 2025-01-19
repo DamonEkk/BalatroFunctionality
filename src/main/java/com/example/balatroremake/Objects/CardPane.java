@@ -1,5 +1,7 @@
 package com.example.balatroremake.Objects;
 
+import com.example.balatroremake.Scenes.GameScreenController;
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -8,6 +10,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class CardPane extends StackPane {
+
+    @FXML
+    private HBox topCard;
 
     PlayCard card;
     int selected = 0;
@@ -30,7 +35,7 @@ public class CardPane extends StackPane {
 
         Label midSpace = new Label();
         midSpace.setText(" ");
-        middleBox.setPadding(new Insets(0, 35, 0, 35));
+        middleBox.setPadding(new Insets(50, 45, 50, 45));
 
         spaceBox.setAlignment(Pos.TOP_LEFT);
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -77,7 +82,7 @@ public class CardPane extends StackPane {
         suitBox.getChildren().addAll(suitLabel);
         suitBox1.getChildren().addAll(suitLabelBottom);
 
-        fullCard.setSpacing(30);
+
 
         spaceBox.getChildren().addAll(suitBox, nameBox);
         bottomBox.getChildren().addAll(nameBox1, suitBox1);
@@ -88,9 +93,19 @@ public class CardPane extends StackPane {
         getChildren().addAll(fullCard);
 
         fullCard.setOnMouseClicked(e -> {
-            if (this.selected == 0){
-                middleBox.setPadding(new Insets(40, 70, 40, 70));
+            if (this.selected == 0 && GameScreenController.selectedHand <= 4) {
+//
+                System.out.println(GameScreenController.selectedHand);
+                this.setTranslateY(-20);
+                GameScreenController.selectedHand++;
+
                 selected = 1;
+            }
+            else if (this.selected == 1){
+//
+                this.setTranslateY(0);
+                GameScreenController.selectedHand--;
+                selected = 0;
             }
         });
 
