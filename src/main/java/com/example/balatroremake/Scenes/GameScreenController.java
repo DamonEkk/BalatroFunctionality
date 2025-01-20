@@ -7,10 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GameScreenController {
 
@@ -35,7 +32,12 @@ public class GameScreenController {
         generate();
     }
 
+    // This generates the cards from allCards
     public void generate(){
+        if (allCards.size() == 0) {
+            // run game over
+        }
+
         while (allCards.size() >= 0 && hand.size() <= handCompacity) {
             int cardIndex = new Random().nextInt(allCards.size());
             System.out.println("cardIndex: " + cardIndex);
@@ -50,5 +52,31 @@ public class GameScreenController {
             cardVBox.getChildren().add(cardGraphic);
             hand.add(cardGraphic);
         }
+    }
+
+    public void onDiscardAction() {
+        Iterator<CardPane> iterator = selectedCards.iterator(); // Create itereator
+        while (iterator.hasNext()) {
+            CardPane cardPane = iterator.next();
+            try{
+                hand.remove(cardPane); // remove cardPane from hand list
+                cardVBox.getChildren().remove(cardPane); // remove cardPane from the cardVBox which displays the cards
+                selectedHand = 0; // resets the limit on selected cards
+                iterator.remove(); // removes cardPane from selectedCards list.
+                generate(); // regenerate cards to hand.
+
+            }
+            catch (Exception e){
+                System.out.println("Tried removing " + cardPane);
+                for (CardPane card : hand) {
+                    System.out.println(card);
+                }
+            }
+        }
+
+    }
+
+    public void onPlayHandAction() {
+
     }
 }

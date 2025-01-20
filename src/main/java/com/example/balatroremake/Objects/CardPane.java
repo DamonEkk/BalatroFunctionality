@@ -112,4 +112,8 @@ public class CardPane extends StackPane {
         });
 
     }
+
+    public PlayCard getCard() {
+        return card;
+    }
 }
