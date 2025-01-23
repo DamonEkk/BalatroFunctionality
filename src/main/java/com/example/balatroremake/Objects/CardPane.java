@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.transform.Rotate;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -18,6 +19,7 @@ public class CardPane extends StackPane {
     private double offsetX;
     private double offsetY;
     private long timeInitated;
+    private double oldX = 0;
 
     @FXML
     private HBox topCard;
@@ -99,6 +101,8 @@ public class CardPane extends StackPane {
 
         fullCard.setStyle("-fx-border-color: black;");
         getChildren().addAll(fullCard);
+        Rotate rotation = new Rotate();
+
 
 
 
@@ -129,6 +133,7 @@ public class CardPane extends StackPane {
             else if (dragged && selected == 0) {
                 this.setTranslateX(0); // reset the card positon.
                 this.setTranslateY(0);
+                rotation.setAngle(0);
             }
 
         });
@@ -149,6 +154,21 @@ public class CardPane extends StackPane {
 
                 this.setTranslateX(newX - this.getLayoutX()); //sets card to mouse location.
                 this.setTranslateY(newY - this.getLayoutY());
+
+                rotation.setPivotX(0);
+                double direction = event.getSceneX() - oldX;
+                System.out.println(direction);
+
+                if (direction >= 0){
+                    rotation.setAngle(direction * 10.5);
+                }
+                else if (direction <= 0){
+                    rotation.setAngle(direction * 10.5);
+                }
+                oldX = event.getSceneX();
+
+                this.getTransforms().setAll(rotation);
+
             }
         });
 
