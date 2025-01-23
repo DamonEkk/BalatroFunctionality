@@ -21,6 +21,9 @@ public class GameScreenController {
     int handCompacity = 7;
 
     @FXML
+    private HBox playedCardsVBox;
+
+    @FXML
     private HBox cardVBox;
 
     @FXML
@@ -77,6 +80,30 @@ public class GameScreenController {
     }
 
     public void onPlayHandAction() {
+        Iterator<CardPane> iterator = selectedCards.iterator(); // Create itereator
+        while (iterator.hasNext()) {
+            CardPane cardPane = iterator.next();
+            try{
+                hand.remove(cardPane); // remove cardPane from hand list
+                cardVBox.getChildren().remove(cardPane); // remove cardPane from the cardVBox which displays the cards
+
+                // disable card properties
+                cardPane.setSelected(3);
+                cardPane.setTranslateY(0);
+
+                playedCardsVBox.getChildren().add(cardPane);
+                selectedHand = 0; // resets the limit on selected cards
+                iterator.remove(); // removes cardPane from selectedCards list.
+                generate(); // regenerate cards to hand.
+
+            }
+            catch (Exception e){
+                System.out.println("Tried removing " + cardPane);
+                for (CardPane card : hand) {
+                    System.out.println(card);
+                }
+            }
+        }
 
     }
 }

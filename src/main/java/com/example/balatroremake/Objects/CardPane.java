@@ -9,7 +9,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import static java.lang.System.currentTimeMillis;
+
 public class CardPane extends StackPane {
+
+    private double offsetX;
+    private double offsetY;
+    private long timeInitated;
 
     @FXML
     private HBox topCard;
@@ -92,9 +100,17 @@ public class CardPane extends StackPane {
         fullCard.setStyle("-fx-border-color: black;");
         getChildren().addAll(fullCard);
 
-        fullCard.setOnMouseClicked(e -> {
-            if (this.selected == 0 && GameScreenController.selectedHand <= 4) {
+
+
+        this.setOnMouseReleased(e -> {
+            boolean dragged = false;
+            if (System.currentTimeMillis() - timeInitated >= 125) { // checks to see if time elapsed is more than .25 of a second
+                dragged = true;
+            }
+
+            if (this.selected == 0 && GameScreenController.selectedHand <= 4 && !dragged) {
 //
+
                 System.out.println(GameScreenController.selectedHand);
                 this.setTranslateY(-20);
                 GameScreenController.selectedHand++;
@@ -102,18 +118,48 @@ public class CardPane extends StackPane {
 
                 selected = 1;
             }
-            else if (this.selected == 1){
+            else if (this.selected == 1) {
 //
                 this.setTranslateY(0);
                 GameScreenController.selectedHand--;
                 GameScreenController.selectedCards.remove(this);
                 selected = 0;
             }
+
+            else if (dragged && selected == 0) {
+                this.setTranslateX(0); // reset the card positon.
+                this.setTranslateY(0);
+            }
+
         });
+
+        this.setOnMousePressed(event ->{
+            if (selected == 0){
+                timeInitated = System.currentTimeMillis(); // records time of click, used to check time between letting go.
+                offsetX = event.getSceneX() - this.getBoundsInParent().getMinX(); //gets offset values for the card positions.
+                offsetY = event.getSceneY() - this.getBoundsInParent().getMinY();
+            }
+        });
+
+        this.setOnMouseDragged(event -> {
+
+            if (selected == 0 && System.currentTimeMillis() - timeInitated >= 125) {
+                double newX = event.getSceneX() - offsetX; // gets the card coordinates based of mouse positon.
+                double newY = event.getSceneY() - offsetY;
+
+                this.setTranslateX(newX - this.getLayoutX()); //sets card to mouse location.
+                this.setTranslateY(newY - this.getLayoutY());
+            }
+        });
+
 
     }
 
     public PlayCard getCard() {
         return card;
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
     }
 }

@@ -91,12 +91,12 @@
         </VBox>
 
         <VBox fx:id="mainGame" alignment="CENTER" HBox.hgrow="ALWAYS" spacing="5">
-            <VBox fx:id="jokers" alignment="TOP_CENTER" minHeight="300">
+            <HBox fx:id="jokersVBox" alignment="TOP_CENTER" minHeight="300">
                 <Label>gaming gang</Label>
-            </VBox>
-            <VBox fx:id="playedCards" minHeight="350" alignment="CENTER">
+            </HBox>
+            <HBox fx:id="playedCardsVBox" minHeight="0" alignment="CENTER" spacing="20">
                 <Label>gaming gang</Label>
-            </VBox>
+            </HBox>
             <VBox alignment="BOTTOM_CENTER">
                 <padding>
                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
