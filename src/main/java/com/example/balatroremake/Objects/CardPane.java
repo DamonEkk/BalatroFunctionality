@@ -1,6 +1,9 @@
 package com.example.balatroremake.Objects;
 
 import com.example.balatroremake.Scenes.GameScreenController;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -131,11 +135,16 @@ public class CardPane extends StackPane {
             }
 
             else if (dragged && selected == 0) {
-                this.setTranslateX(0); // reset the card positon.
-                this.setTranslateY(0);
-                rotation.setAngle(0);
+                Timeline timeline = new Timeline(
+                        new KeyFrame( // smooth return feel
+                                Duration.millis(300),
+                                new KeyValue(this.translateXProperty(), 0, javafx.animation.Interpolator.EASE_BOTH),
+                                new KeyValue(this.translateYProperty(), 0, javafx.animation.Interpolator.EASE_BOTH),
+                                new KeyValue(rotation.angleProperty(), 0, javafx.animation.Interpolator.EASE_BOTH)
+                        )
+                );
+                timeline.play();
             }
-
         });
 
         this.setOnMousePressed(event ->{
@@ -151,20 +160,31 @@ public class CardPane extends StackPane {
             if (selected == 0 && System.currentTimeMillis() - timeInitated >= 125) {
                 double newX = event.getSceneX() - offsetX; // gets the card coordinates based of mouse positon.
                 double newY = event.getSceneY() - offsetY;
+                double smoothing = 0.05;
+                double currentAngle = rotation.getAngle();
+
 
                 this.setTranslateX(newX - this.getLayoutX()); //sets card to mouse location.
                 this.setTranslateY(newY - this.getLayoutY());
 
+
                 rotation.setPivotX(0);
                 double direction = event.getSceneX() - oldX;
-                System.out.println(direction);
+                double fixedDirection = direction * 15.5;
+                double smoothedAngle = currentAngle + (fixedDirection - currentAngle) * smoothing;
 
-                if (direction >= 0){
-                    rotation.setAngle(direction * 10.5);
+
+                System.out.println(smoothedAngle);
+
+
+                if ((smoothedAngle <= 90 && smoothedAngle >= -90) && ((smoothedAngle >= 0.2) || (smoothedAngle <= -0.2))){
+                    rotation.setAngle(smoothedAngle);
                 }
-                else if (direction <= 0){
-                    rotation.setAngle(direction * 10.5);
+                else if (newX > 0.2 || newX < -0.2){
+                    rotation.setAngle(0);
                 }
+
+
                 oldX = event.getSceneX();
 
                 this.getTransforms().setAll(rotation);
