@@ -15,8 +15,12 @@ public class GameScreenController {
     public List<PlayCard> usedCards = new ArrayList<>();
     public List<CardPane> hand = new ArrayList<>();
     public static List<CardPane> selectedCards = new ArrayList<>();
+    public static List<CardPane> sortedCards = new ArrayList<>();
+    public static List<Integer> discardingPositions = new ArrayList<>();
 
     public static int selectedHand = 0;
+    public static int xPosition = 0;
+    public static boolean positionFlag = false;
 
     int handCompacity = 7;
 
@@ -41,9 +45,14 @@ public class GameScreenController {
             // run game over
         }
 
-        while (allCards.size() >= 0 && hand.size() <= handCompacity) {
+        while (allCards.size() > 0 && hand.size() <= handCompacity) {
+            if (discardingPositions.size() > 0) {
+                xPosition = discardingPositions.get(0);
+                discardingPositions.remove(0);
+                positionFlag = true;
+            }
+
             int cardIndex = new Random().nextInt(allCards.size());
-            System.out.println("cardIndex: " + cardIndex);
 
             PlayCard playCard = allCards.get(cardIndex);
 
@@ -55,6 +64,8 @@ public class GameScreenController {
             cardVBox.getChildren().add(cardGraphic);
             hand.add(cardGraphic);
         }
+
+        sortPositions(); // sorts all cards so new cards added replacd their old counterpart
     }
 
     public void onDiscardAction() {
@@ -62,6 +73,7 @@ public class GameScreenController {
         while (iterator.hasNext()) {
             CardPane cardPane = iterator.next();
             try{
+                discardingPositions.add(cardPane.getxPos()); // used to reproduce old xPos values.
                 hand.remove(cardPane); // remove cardPane from hand list
                 cardVBox.getChildren().remove(cardPane); // remove cardPane from the cardVBox which displays the cards
                 selectedHand = 0; // resets the limit on selected cards
@@ -76,7 +88,6 @@ public class GameScreenController {
                 }
             }
         }
-
     }
 
     public void onPlayHandAction() {
@@ -84,6 +95,8 @@ public class GameScreenController {
         while (iterator.hasNext()) {
             CardPane cardPane = iterator.next();
             try{
+                discardingPositions.add(cardPane.getxPos());
+
                 hand.remove(cardPane); // remove cardPane from hand list
                 cardVBox.getChildren().remove(cardPane); // remove cardPane from the cardVBox which displays the cards
 
@@ -98,12 +111,31 @@ public class GameScreenController {
 
             }
             catch (Exception e){
+                System.out.println(e);
                 System.out.println("Tried removing " + cardPane);
                 for (CardPane card : hand) {
                     System.out.println(card);
                 }
             }
         }
+    }
 
+    public static int getXPosition(){
+        if (positionFlag){
+            positionFlag = false; // Flag is used to prevent a higher position than cards in hand.
+            return xPosition;
+        }
+        xPosition++;
+        return xPosition - 1; // used when generating the first cards.
+    }
+
+    public void sortPositions() {
+        sortedCards = new ArrayList<>(hand);
+        sortedCards.sort(Comparator.comparing(CardPane::getxPos)); // if too slow change in the future
+
+        cardVBox.getChildren().clear();
+        cardVBox.getChildren().addAll(sortedCards);
+
+        sortedCards.clear();
     }
 }

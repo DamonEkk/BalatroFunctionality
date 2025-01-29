@@ -59,10 +59,6 @@ public class PlayCard extends Card{
             }
         }
 
-        for (PlayCard card : allCards) {
-            System.out.println(card.name + " " + card.description + " " + card.faceCard + " " + card.cardValue);
-        }
-
     }
 
     // for player hand and original deck to pull extra cards

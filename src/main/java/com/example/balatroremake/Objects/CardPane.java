@@ -30,14 +30,17 @@ public class CardPane extends StackPane {
 
     PlayCard card;
     int selected = 0;
+    private int xPos = 0;
 
-    public CardPane(PlayCard card, int selected) {
+    public CardPane(PlayCard card, int selected, int xPos) {
         this.card = card;
         this.selected = selected;
+        this.xPos = xPos;
     }
 
     public CardPane(PlayCard card) {
-        this( card, 0 );
+        this(card, 0, GameScreenController.getXPosition());
+        System.out.println("card positoning = "+this.xPos);
         VBox fullCard = new VBox();
         HBox spaceBox = new HBox();
         HBox middleBox = new HBox();
@@ -117,17 +120,13 @@ public class CardPane extends StackPane {
             }
 
             if (this.selected == 0 && GameScreenController.selectedHand <= 4 && !dragged) {
-//
-
-                System.out.println(GameScreenController.selectedHand);
                 this.setTranslateY(-20);
                 GameScreenController.selectedHand++;
                 GameScreenController.selectedCards.add(this);
-
                 selected = 1;
             }
+
             else if (this.selected == 1) {
-//
                 this.setTranslateY(0);
                 GameScreenController.selectedHand--;
                 GameScreenController.selectedCards.remove(this);
@@ -160,30 +159,23 @@ public class CardPane extends StackPane {
             if (selected == 0 && System.currentTimeMillis() - timeInitated >= 125) {
                 double newX = event.getSceneX() - offsetX; // gets the card coordinates based of mouse positon.
                 double newY = event.getSceneY() - offsetY;
-                double smoothing = 0.05;
+                double smoothing = 0.02;
                 double currentAngle = rotation.getAngle();
-
 
                 this.setTranslateX(newX - this.getLayoutX()); //sets card to mouse location.
                 this.setTranslateY(newY - this.getLayoutY());
-
-
                 rotation.setPivotX(0);
+
                 double direction = event.getSceneX() - oldX;
                 double fixedDirection = direction * 15.5;
                 double smoothedAngle = currentAngle + (fixedDirection - currentAngle) * smoothing;
 
-
-                System.out.println(smoothedAngle);
-
-
-                if ((smoothedAngle <= 90 && smoothedAngle >= -90) && ((smoothedAngle >= 0.2) || (smoothedAngle <= -0.2))){
+                if ((smoothedAngle <= 180 && smoothedAngle >= -180) && ((smoothedAngle >= 0.2) || (smoothedAngle <= -0.2))){
                     rotation.setAngle(smoothedAngle);
                 }
                 else if (newX > 0.2 || newX < -0.2){
                     rotation.setAngle(0);
                 }
-
 
                 oldX = event.getSceneX();
 
@@ -201,5 +193,9 @@ public class CardPane extends StackPane {
 
     public void setSelected(int selected) {
         this.selected = selected;
+    }
+
+    public int getxPos(){
+        return xPos;
     }
 }
