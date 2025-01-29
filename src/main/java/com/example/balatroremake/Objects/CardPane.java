@@ -39,7 +39,7 @@ public class CardPane extends StackPane {
     }
 
     public CardPane(PlayCard card) {
-        this(card, 0, GameScreenController.getXPosition());
+        this(card, 0, GameScreenController.getInstance().getXPosition());
         System.out.println("card positoning = "+this.xPos);
         VBox fullCard = new VBox();
         HBox spaceBox = new HBox();
@@ -180,15 +180,28 @@ public class CardPane extends StackPane {
                 oldX = event.getSceneX();
 
                 this.getTransforms().setAll(rotation);
+                double adjacentCard;
 
+                if (newX > this.getLayoutX() && this.xPos != GameScreenController.hand.size() - 1) {
+                    adjacentCard = GameScreenController.getInstance().getAdjacentPosition(this.getxPos() + 1);
+
+                    if (newX > adjacentCard){
+                        System.out.println(this.getxPos());
+                        GameScreenController.getInstance().switchPosition(this.getxPos(), this.getxPos() + 1); // switches xpos with each other RIGHT
+                        System.out.println(this.getxPos());
+                        //GameScreenController.getInstance().sortPositions();
+                    }
+                }
+                else if (newX < this.getLayoutX() && this.xPos != 0) {
+                    adjacentCard = GameScreenController.getInstance().getAdjacentPosition(this.getxPos() - 1);
+
+                    if (newX < adjacentCard){
+                        GameScreenController.getInstance().switchPosition(this.getxPos() - 1, this.getxPos()); // LEFT
+                        //GameScreenController.getInstance().sortPositions();
+                    }
+                }
             }
         });
-
-
-    }
-
-    public PlayCard getCard() {
-        return card;
     }
 
     public void setSelected(int selected) {
@@ -197,5 +210,9 @@ public class CardPane extends StackPane {
 
     public int getxPos(){
         return xPos;
+    }
+
+    public void setxPos(int xPos) {
+        this.xPos = xPos;
     }
 }

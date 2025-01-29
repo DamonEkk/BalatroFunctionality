@@ -13,7 +13,7 @@ public class GameScreenController {
 
     public List<PlayCard> allCards;
     public List<PlayCard> usedCards = new ArrayList<>();
-    public List<CardPane> hand = new ArrayList<>();
+    public static List<CardPane> hand = new ArrayList<>();
     public static List<CardPane> selectedCards = new ArrayList<>();
     public static List<CardPane> sortedCards = new ArrayList<>();
     public static List<Integer> discardingPositions = new ArrayList<>();
@@ -37,6 +37,16 @@ public class GameScreenController {
         PlayCard[] tempList = PlayCard.getAllCards();
         allCards = new ArrayList<>(Arrays.asList(tempList));
         generate();
+    }
+
+    private static GameScreenController instance;
+
+    public GameScreenController() {
+        instance = this;
+    }
+
+    public static GameScreenController getInstance() {
+        return instance;
     }
 
     // This generates the cards from allCards
@@ -120,7 +130,7 @@ public class GameScreenController {
         }
     }
 
-    public static int getXPosition(){
+    public int getXPosition(){
         if (positionFlag){
             positionFlag = false; // Flag is used to prevent a higher position than cards in hand.
             return xPosition;
@@ -137,5 +147,14 @@ public class GameScreenController {
         cardVBox.getChildren().addAll(sortedCards);
 
         sortedCards.clear();
+    }
+
+    public  double getAdjacentPosition(int cardIndex) {
+        return hand.get(cardIndex).getLayoutX();
+    }
+
+    public void switchPosition(int activeIndex, int adjacentIndex) {
+        hand.get(activeIndex).setxPos(adjacentIndex);
+        hand.get(adjacentIndex).setLayoutX(activeIndex);
     }
 }
