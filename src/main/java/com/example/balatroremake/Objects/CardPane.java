@@ -1,9 +1,11 @@
 package com.example.balatroremake.Objects;
 
 import com.example.balatroremake.Scenes.GameScreenController;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,6 +26,7 @@ public class CardPane extends StackPane {
     private double offsetY;
     private long timeInitated;
     private double oldX = 0;
+    private Timeline debounce = new Timeline();
 
     @FXML
     private HBox topCard;
@@ -31,6 +34,7 @@ public class CardPane extends StackPane {
     PlayCard card;
     int selected = 0;
     private int xPos = 0;
+    private double oldMousePos;
 
     public CardPane(PlayCard card, int selected, int xPos) {
         this.card = card;
@@ -49,6 +53,7 @@ public class CardPane extends StackPane {
         VBox suitBox = new VBox();
         VBox nameBox1 = new VBox();
         VBox suitBox1 = new VBox();
+        this.setStyle("-fx-background-color: #fffaf0");
 
         Label midSpace = new Label();
         midSpace.setText(" ");
@@ -88,9 +93,8 @@ public class CardPane extends StackPane {
         if (card.description.equals("♥") || card.description.equals("♦")){
             suitLabel.setStyle("-fx-font-size: 20; -fx-text-fill: red;");
             suitLabelBottom.setStyle("-fx-font-size: 20; -fx-text-fill: red;");
-
-
         }
+
         else{
             suitLabel.setStyle("-fx-font-size: 20; -fx-text-fill: black;");
             suitLabelBottom.setStyle("-fx-font-size: 20; -fx-text-fill: black;");
@@ -98,8 +102,6 @@ public class CardPane extends StackPane {
 
         suitBox.getChildren().addAll(suitLabel);
         suitBox1.getChildren().addAll(suitLabelBottom);
-
-
 
         spaceBox.getChildren().addAll(suitBox, nameBox);
         bottomBox.getChildren().addAll(nameBox1, suitBox1);
@@ -111,16 +113,16 @@ public class CardPane extends StackPane {
         Rotate rotation = new Rotate();
 
 
-
-
         this.setOnMouseReleased(e -> {
             boolean dragged = false;
-            if (System.currentTimeMillis() - timeInitated >= 125) { // checks to see if time elapsed is more than .25 of a second
+
+            if (currentTimeMillis() - timeInitated >= 125) { // checks to see if time elapsed is more than .25 of a second
                 dragged = true;
             }
 
             if (this.selected == 0 && GameScreenController.selectedHand <= 4 && !dragged) {
                 this.setTranslateY(-20);
+                System.out.println(this.xPos);
                 GameScreenController.selectedHand++;
                 GameScreenController.selectedCards.add(this);
                 selected = 1;
@@ -134,29 +136,35 @@ public class CardPane extends StackPane {
             }
 
             else if (dragged && selected == 0) {
+                GameScreenController.getInstance().sortPositions();
                 Timeline timeline = new Timeline(
                         new KeyFrame( // smooth return feel
-                                Duration.millis(300),
-                                new KeyValue(this.translateXProperty(), 0, javafx.animation.Interpolator.EASE_BOTH),
-                                new KeyValue(this.translateYProperty(), 0, javafx.animation.Interpolator.EASE_BOTH),
-                                new KeyValue(rotation.angleProperty(), 0, javafx.animation.Interpolator.EASE_BOTH)
+                                Duration.millis(200),
+                                new KeyValue(this.translateXProperty(), 0, Interpolator.EASE_BOTH),
+                                new KeyValue(this.translateYProperty(), 0, Interpolator.EASE_BOTH),
+                                new KeyValue(rotation.angleProperty(), 0, Interpolator.EASE_BOTH)
                         )
                 );
                 timeline.play();
+                this.setViewOrder(0.0);
             }
         });
 
+
         this.setOnMousePressed(event ->{
+            this.setViewOrder(-1.0);
+            oldMousePos = 0;
             if (selected == 0){
-                timeInitated = System.currentTimeMillis(); // records time of click, used to check time between letting go.
+                timeInitated = currentTimeMillis(); // records time of click, used to check time between letting go.
                 offsetX = event.getSceneX() - this.getBoundsInParent().getMinX(); //gets offset values for the card positions.
                 offsetY = event.getSceneY() - this.getBoundsInParent().getMinY();
             }
         });
 
+
         this.setOnMouseDragged(event -> {
 
-            if (selected == 0 && System.currentTimeMillis() - timeInitated >= 125) {
+            if (selected == 0 && currentTimeMillis() - timeInitated >= 125) {
                 double newX = event.getSceneX() - offsetX; // gets the card coordinates based of mouse positon.
                 double newY = event.getSceneY() - offsetY;
                 double smoothing = 0.02;
@@ -178,39 +186,48 @@ public class CardPane extends StackPane {
                 }
 
                 oldX = event.getSceneX();
-
                 this.getTransforms().setAll(rotation);
-                double adjacentCard;
-
-                if (newX > this.getLayoutX() && this.xPos != GameScreenController.hand.size() - 1) {
-                    adjacentCard = GameScreenController.getInstance().getAdjacentPosition(this.getxPos() + 1);
-
-                    if (newX > adjacentCard){
-                        System.out.println(this.getxPos());
-                        GameScreenController.getInstance().switchPosition(this.getxPos(), this.getxPos() + 1); // switches xpos with each other RIGHT
-                        System.out.println(this.getxPos());
-                        //GameScreenController.getInstance().sortPositions();
-                    }
-                }
-                else if (newX < this.getLayoutX() && this.xPos != 0) {
-                    adjacentCard = GameScreenController.getInstance().getAdjacentPosition(this.getxPos() - 1);
-
-                    if (newX < adjacentCard){
-                        GameScreenController.getInstance().switchPosition(this.getxPos() - 1, this.getxPos()); // LEFT
-                        //GameScreenController.getInstance().sortPositions();
-                    }
-                }
+                cardPositionChange(newX);
             }
         });
     }
+
+
+    public void cardPositionChange(double newX){
+        double adjacentCard;
+        int currentX = this.getxPos();
+
+        if (newX > oldMousePos && currentX != GameScreenController.hand.size() - 1) {
+            adjacentCard = GameScreenController.getInstance().getAdjacentPosition(currentX + 1);
+
+            if (newX > adjacentCard){
+                GameScreenController.getInstance().switchPosition(currentX, currentX + 1); // switches xpos with each other RIGHT
+            }
+        }
+
+        else if (newX < oldMousePos && currentX > 0) {
+            adjacentCard = GameScreenController.getInstance().getAdjacentPosition(currentX - 1);
+
+            if (newX < adjacentCard){
+                GameScreenController.getInstance().switchPosition(currentX - 1, currentX); // LEFT
+
+            }
+        }
+
+        oldMousePos = newX;
+
+    }
+
 
     public void setSelected(int selected) {
         this.selected = selected;
     }
 
+
     public int getxPos(){
         return xPos;
     }
+
 
     public void setxPos(int xPos) {
         this.xPos = xPos;

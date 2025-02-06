@@ -2,6 +2,7 @@ package com.example.balatroremake.Scenes;
 
 import com.example.balatroremake.Objects.CardPane;
 import com.example.balatroremake.Objects.PlayCard;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -140,21 +141,29 @@ public class GameScreenController {
     }
 
     public void sortPositions() {
-        sortedCards = new ArrayList<>(hand);
-        sortedCards.sort(Comparator.comparing(CardPane::getxPos)); // if too slow change in the future
+        hand.sort(Comparator.comparingInt(CardPane::getxPos));
 
         cardVBox.getChildren().clear();
-        cardVBox.getChildren().addAll(sortedCards);
+        cardVBox.getChildren().addAll(hand);
 
-        sortedCards.clear();
+        //cardVBox.layout();
+        for (CardPane card : hand) {
+            card.setTranslateX(0);
+        }
     }
 
-    public  double getAdjacentPosition(int cardIndex) {
+    public double getAdjacentPosition(int cardIndex) {
         return hand.get(cardIndex).getLayoutX();
     }
 
     public void switchPosition(int activeIndex, int adjacentIndex) {
+
+        hand.get(adjacentIndex).setTranslateX(hand.get(adjacentIndex).getTranslateX() -156);
+        hand.get(activeIndex).setTranslateX(hand.get(activeIndex).getTranslateX() +156);
+
         hand.get(activeIndex).setxPos(adjacentIndex);
-        hand.get(adjacentIndex).setLayoutX(activeIndex);
+        hand.get(adjacentIndex).setxPos(activeIndex);
+        Collections.swap(hand, activeIndex, adjacentIndex);
+
     }
 }
