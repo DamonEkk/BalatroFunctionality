@@ -213,14 +213,16 @@ public class CardPane extends StackPane {
 
             }
         }
-
         oldMousePos = newX;
-
     }
 
 
     public void setSelected(int selected) {
         this.selected = selected;
+    }
+
+    public PlayCard getCard(){
+        return card;
     }
 
 

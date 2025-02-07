@@ -11,7 +11,7 @@ public class PlayCard extends Card{
     String faceCard;
     int cardValue;
     Special attribute;
-    public PlayCard(String name, String description, String faceCard, int cardValue) {
+    public PlayCard(String name, String description, String faceCard, int cardValue, int cardID) {
         super(name, description);
         this.faceCard = faceCard;
         this.cardValue = cardValue;
@@ -47,11 +47,11 @@ public class PlayCard extends Card{
 
                 if (faceCard.equals("NONE")){
                     name = description + "_" + j;
-                    card = new PlayCard(name, description, faceCard, j);
+                    card = new PlayCard(name, description, faceCard, j, j);
                 }
                 else {
                     name = description + "_" + faceCard;
-                    card = new PlayCard(name, description, faceCard, 0);
+                    card = new PlayCard(name, description, faceCard, 0, j);
                 }
 
                 allCards[totalCards] = card;
